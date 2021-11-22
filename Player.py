@@ -1,5 +1,5 @@
 class Player:
-
+#kommentar
    # Klassens konstruktor
     def __init__(self,name,serve,wins,gamesplayed):
         self.__name = name
