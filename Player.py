@@ -29,7 +29,7 @@ class Player:
         return self.__gamesplayed
 
     def get_ratio(self):
-        return (self.__wins)/(self.__gamesplayed)
+        return round((self.__wins)/(self.__gamesplayed),3)
 
 
 
