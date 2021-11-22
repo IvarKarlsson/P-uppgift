@@ -39,7 +39,7 @@ def comparisonwin(listofplayerobjects):
 
 #Denna funktion generar en tabell.
 def tablemaker(basewindow,listsorted):
-    table = ttk.Treeview(basewindow)
+    table = ttk.Treeview(basewindow,height=len(listsorted), selectmode="extended")
     table['columns'] = ('player_name', 'serve%', 'Wins', 'Win%')
 
     table.column("#0", width=0,  stretch=NO)
@@ -56,9 +56,9 @@ def tablemaker(basewindow,listsorted):
 
     for i in range(len(listsorted)):
         table.insert(parent='',index='end',iid=i,text='',
-        values=(listsorted[i].get_name(),listsorted[i].get_serve(),listsorted[i].get_wins(),listsorted[i].get_ratio()))
+        values=(listsorted[i].get_name(),int(listsorted[i].get_serve()*100),listsorted[i].get_wins(),listsorted[i].get_ratio()*100))
     
-    table.pack()
+    table.grid(columnspan=len(listsorted),)
 
 
 
