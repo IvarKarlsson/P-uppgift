@@ -1,8 +1,15 @@
 from Player import Player
 
+from match import Match
+
 from tkinter import ttk
 
 from tkinter import *
+import random
+
+
+
+
 def windowconfig():
     dataoption = 0
     window = Tk() 
@@ -10,7 +17,10 @@ def windowconfig():
     window.resizable(False , False) 
     window.title("Tennis simulator")
     return window
-
+windows = windowconfig()
+playersname = StringVar()
+playersname.set("")
+matchupnames = []
 # Denna funktion läser in statistiken från listan och skapar en lista med spelarobjekt.
 def filetolists():
     playerlist = []
@@ -37,6 +47,7 @@ def comparisonwin(listofplayerobjects):
                 sortedplayerlist.append(listofplayerobjects[x])
     return sortedplayerlist
 
+
 #Denna funktion generar en tabell.
 def tablemaker(basewindow,listsorted):
     table = ttk.Treeview(basewindow,height=len(listsorted), selectmode="extended")
@@ -54,20 +65,67 @@ def tablemaker(basewindow,listsorted):
     table.heading("Wins",text="Wins",anchor=CENTER)
     table.heading("Win%",text="Win%",anchor=CENTER)
 
+    
+    playerselected = IntVar()
+    playerselected.set(0)
+    
+    
+    
+    def selectplayers(a):
+        
+        if playerselected.get() < 2:
+            matchupplayer = table.focus()
+            if playerselected == 0:
+                playersname.set((table.item(matchupplayer)['values'][0]).strip())
+            else:
+                playersname.set((playersname.get()+"-" +table.item(matchupplayer)['values'][0]).strip())
+            matchupnames.append(table.item(matchupplayer)['values'][0])
+            playerselected.set(playerselected.get()+1)
+        
+        if playerselected.get() == 2:
+            print(playersname.get())
+
+    table.bind('<ButtonRelease-1>', selectplayers)
     for i in range(len(listsorted)):
         table.insert(parent='',index='end',iid=i,text='',
         values=(listsorted[i].get_name(),int(listsorted[i].get_serve()*100),listsorted[i].get_wins(),listsorted[i].get_ratio()*100))
     
     table.grid(columnspan=len(listsorted),)
 
+def buttonconfig(playerlist):
+    def simulator():
+        player1tosimulate= None
+        player2tosimulate= None
+        
+        playername1= playersname.get().split("-")[1]
+        playername2= playersname.get().split("-")[2]
+        for i in range(len(playerlist)):
+            if playername1 == playerlist[i].get_name():
+                player1tosimulate = playerlist[i]
+            if playername2 == playerlist[i].get_name():
+                player2tosimulate = playerlist[i]
+        match = Match(player1tosimulate,player2tosimulate)
+        while True:
+            match.points()
 
+
+    
+    
+    simulatebutton= Button(windows, command=simulator, text="Simulate")
+    simulatebutton.grid(ipady=15,ipadx=25,column=int(1.5), rowspan=4)
+
+    
 
 # Funktion där alla andra funktioner kallas på 
 def main():
-    windows = windowconfig()
+    
+    
     playerlistfromfile = filetolists()
     sortedlist = comparisonwin(playerlistfromfile)
-    tablemaker(windows,sortedlist)
+    finishedtable = tablemaker(windows,sortedlist)
+    buttonconfig(playerlistfromfile)
+    
+    
     
     windows.mainloop()
     
