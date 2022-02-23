@@ -39,6 +39,32 @@ def filetolists():
         playerlist.append(Player(playerstats[0], float(playerstats[1]), int(playerstats[2]), int(playerstats[3])))
     return playerlist
 
+def updatedstatistics(match):
+            
+            fil2= open("spelare","r+")
+            
+            
+            preupdatelist = fil2.readlines()
+
+            
+
+            for i in range(len(preupdatelist)):
+                if match.get_matchwinner().get_name() in preupdatelist[i]:
+                    preupdatelist[i] = match.get_matchwinner().get_name() +" "+ str(match.get_matchwinner().get_serve())+" "+ str(match.get_matchwinner().get_wins()+1)+" "+str(match.get_matchwinner().get_gamesplayed()+1)+"\n"
+                
+            
+            for x in range(len(preupdatelist)):
+                if match.get_matchloser().get_name() in preupdatelist[x]:
+                    preupdatelist[x]= match.get_matchloser().get_name() +" "+ str(match.get_matchloser().get_serve())+" "+ str(match.get_matchloser().get_wins())+" "+str(match.get_matchloser().get_gamesplayed()+1)+"\n"
+            
+            fil2.close()
+
+            updatedstatistics = open("spelare", "w")
+
+            updatedstatistics.writelines(preupdatelist)
+            
+            fil2.close()
+
 # Denna funktion sorterar spelarobjekten i en lista efter winratio.
 def comparisonwin(listofplayerobjects):
     ratiolist=[]
@@ -200,33 +226,16 @@ def button_and_label_config(playerlist):
                     player1adv_var.set("")
                 
                 windows.update()
-                time.sleep(0.1)
+                time.sleep(0.01)
             
 
             for var in stringvars:
                 var.set("")
+                updatedstatistics(match)
         else:
             messagebox.showerror("Error","Välj två spelare!")
     
 
-        def updatedstatistics():
-            
-            fil2= open("spelare","r+")
-            
-           
-            listoflines= fil2.readlines().strip("/n")
-
-            for i in range(len(listoflines)):
-                if match.get_matchwinner().get_name() in listoflines[i]:
-                    listoflines[i] = match.get_matchwinner().get_name() +" "+ str(match.get_matchwinner().get_serve())+" "+ str(match.get_matchwinner().get_wins()+1)+" "+str(match.get_matchwinner().get_gamesplayed()+1)
-                
-            
-            for x in range(len(listoflines)):
-                if match.get_matchloser().get_name() in listoflines[x]:
-                    listoflines[x]= match.get_matchloser().get_name() +" "+ str(match.get_matchloser().get_serve())+" "+ str(match.get_matchloser().get_wins())+" "+str(match.get_matchloser().get_gamesplayed()+1)
-            fil2.write(listoflines)
-
-            fil2.close()
 
 
 
