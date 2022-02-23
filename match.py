@@ -1,6 +1,7 @@
 
 import random
 
+
 class Match:
     def startserving(self, player1,player2):
         
@@ -17,6 +18,9 @@ class Match:
         self.__setsp1 = 0
         self.__setsp2 = 0
         self.__server = self.startserving(player1,player2)
+        self.__matchongoing = True
+        self.__matchwinner = None
+        self.__matchloser = None
     
     def get_player1(self):
         return self.__player1
@@ -36,6 +40,12 @@ class Match:
     def get_gamesp1(self):
         return self.__gamesp1
     
+    def set_gamesp1(self):
+        self.__gamesp1+=1
+    
+    def set_gamesp2(self):
+        self.__gamesp2+=1
+    
     def get_gamesp2(self):
         return self.__gamesp2
     
@@ -45,70 +55,74 @@ class Match:
     def get_setsp2(self):
         return self.__setsp2
     
-    def set_games(self):
-        self.__gamesp1= self.get_gamesp1()+1
-        
+    def set_matchwinner(self,winner):
+        self.__matchwinner = winner
+
+    def set_matchloser(self,loser):
+        self.__matchloser = loser
+
+    def get_matchloser(self):
+        return self.__matchloser
+
+    def get_matchwinner(self):
+        return self.__matchwinner
     
-    
-    
-    
-    def set_points(self,player):
-        isplayer1 = None
-        currentpoints = None
-        opponentspoint= None
-        if player.get_name()== self.get_player1().get_name():
-            currentpoints= self.get_pointsp1()
-            opponentspoint= self.get_pointsp2()
-            isplayer1=True
+    def set_server(self):
+        if self.get_player1().get_name()== self.get_server().get_name():
+            self.__server= self.get_player2()
         else:
-            currentpoints= self.get_pointsp2()
-            opponentspoint= self.get_pointsp1()
-            isplayer1=False
-        if currentpoints < 30:
-            currentpoints+=15
-            self.__pointsp1 = currentpoints
-        elif currentpoints == 30:
-            currentpoints += 10
-        elif currentpoints == 40 and opponentspoint<40:
-            if isplayer1:
-                self.set_games()
-            else:
-                self.set_games()
-        elif currentpoints == 40 and opponentspoint==40:
-            currentpoints = 50
-        elif currentpoints == 50 and opponentspoint == 50:
-            currentpoints = 40  
-            opponentspoint = 40
-        elif currentpoints == 50 and opponentspoint<=40:
-            if isplayer1:
-                self.set_games()
-            else:
-                self.set_games()
-            
+            self.__server= self.get_player1()
+        
+    def set_sets(self):
+        self.__setsp1 = self.get_setsp1()+1
 
-
+    def get_matchongoing(self):
+        return self.__matchongoing
+    
+    def set_matchongoing(self):
+        self.__matchongoing = not self.__matchongoing
 
     def points(self):
         server = self.get_server()
-        playername = server.get_name()
+        playerservername = server.get_name()
         servepercentage = server.get_serve()
+        otherplayer = self.get_player1()
+        if playerservername == self.get_player1().get_name():
+            otherplayer = self.get_player2()
+
         if servepercentage >= random.random():
-            self.set_points(server)
+            server.__gt__(otherplayer)
         else:
-            if playername== self.get_player1().get_name():
-                self.set_points(self.get_player2())
+            if playerservername == self.get_player1().get_name():
+                self.get_player2().__gt__(self.get_player1())
             else:
-                self.set_points(self.get_player1())
-        print(self.get_player1().get_name() +" " + str(self.get_pointsp1()))
-        print(self.get_player2().get_name() +" " + str(self.get_pointsp2()))
+                self.get_player1().__gt__(self.get_player2())
+        
+        if(self.get_gamesp1() < self.get_player1().get_games()):
+            self.set_server()
+            self.set_gamesp1()
+        if(self.get_gamesp2() < self.get_player2().get_games()):
+            self.set_server()
+            self.set_gamesp2()
+        
+        if self.get_player1().get_sets()== 3:
+            self.set_matchongoing()
+            self.set_matchwinner(self.get_player1())
+            self.set_matchloser(self.get_player2())
+
+        if self.get_player2().get_sets()== 3:
+            self.set_matchongoing()
+            self.set_matchwinner(self.get_player2())
+            self.set_matchloser(self.get_player1())
+        
+        print("\n")
+        print("(S) " + self.get_server().get_name())
+        print(self.get_player1().get_name() +" " + str(self.get_player1().get_points())+" ADV: " + str(self.get_player1().get_adv()) + " Gems:"+ str(self.get_player1().get_games())+" Sets:"+ str(self.get_player1().get_sets()))
+        print(self.get_player2().get_name() +" " + str(self.get_player2().get_points())+" ADV: " + str(self.get_player2().get_adv()) + " Gems:"+ str(self.get_player2().get_games())+" Sets:"+ str(self.get_player2().get_sets()))
+        
 
             
 
 
 
-
-
-
-
-    
 
