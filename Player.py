@@ -118,7 +118,7 @@ class Player:
             self.reset_games(other)
             self.set_change_server(True)
         
-        if other.get_games() >= (self.get_games() + 2) and other.get_games() >= 6:
+        elif other.get_games() >= (self.get_games() + 2) and other.get_games() >= 6:
             other.set_sets()
             self.reset_games(other)
             self.set_change_server(True)
