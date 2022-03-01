@@ -145,33 +145,33 @@ def button_and_label_config(playerlist, table):
     print(player1name_var.get())
     photo = PhotoImage(file="tennisboll.png")
     serverlabel1 = Label(windows,textvariable=player1serv_var)
-    serverlabel1.grid(row=5,column=1)
+    serverlabel1.grid(row=5,column=0)
     namelabel1 = Label(windows,textvariable=player1name_var)
-    namelabel1.grid(row=5,column=2)
+    namelabel1.grid(row=5,column=1)
     pointslabel1 = Label(windows,textvariable=player1points_var)
-    pointslabel1.grid(row=5,column=3)
+    pointslabel1.grid(row=5,column=2)
     gameslabel1 = Label(windows,textvariable=player1games_var)
-    gameslabel1.grid(row=5,column=4)
+    gameslabel1.grid(row=5,column=3)
     setslabel1 = Label(windows,textvariable=player1sets_var)
-    setslabel1.grid(row=5,column=5)
+    setslabel1.grid(row=5,column=4)
     advlabel1 = Label(windows,textvariable=player1adv_var)
-    advlabel1.grid(row=5,column=6)
+    advlabel1.grid(row=5,column=5)
    
     currentresult = Label(windows,image=photo, width=20,height=20)
     currentresult.grid(row=5,column=7)
 
     serverlabel2 = Label(windows,textvariable=player2serv_var)
-    serverlabel2.grid(row=6,column=1)
+    serverlabel2.grid(row=6,column=0)
     namelabel2 = Label(windows,textvariable=player2name_var)
-    namelabel2.grid(row=6,column=2)
+    namelabel2.grid(row=6,column=1)
     pointslabel2 = Label(windows,textvariable=player2points_var)
-    pointslabel2.grid(row=6,column=3)
+    pointslabel2.grid(row=6,column=2)
     gameslabel2 = Label(windows,textvariable=player2games_var)
-    gameslabel2.grid(row=6,column=4)
+    gameslabel2.grid(row=6,column=3)
     setslabel2 = Label(windows,textvariable=player2sets_var)
-    setslabel2.grid(row=6,column=5)
+    setslabel2.grid(row=6,column=4)
     advlabel2 = Label(windows,textvariable=player2adv_var)
-    advlabel2.grid(row=6,column=6)
+    advlabel2.grid(row=6,column=5)
     
 
     # Framställer en knapp. Vid tryck av knappen börjar simuleringen.
@@ -249,15 +249,15 @@ def button_and_label_config(playerlist, table):
     
                
     
-    simulatebutton= Button(windows, command=simulator, text="Simulate")
+    simulatebutton= Button(windows, command=simulator, text="       Simulate        ")
     simulatebutton.grid(ipady=15,ipadx=25,column=int(1.5), rowspan=4)
     
     #En paus_knapp framställs. Vid tryck stannar simuleringen.
     def pause():
         messagebox.showinfo("Pausad","Matchen är pausad, tryck på OK för att återuppta.")
 
-    pausebutton = Button(windows,command=pause, text="Pause Simulation")
-    pausebutton.grid(ipady=25,ipadx=50,column=int(3), rowspan=8)
+    pausebutton = Button(windows,command=pause, text="Pause simulation")
+    pausebutton.grid(ipady=15,ipadx=25,column=int(1.5), rowspan=4)
 
 #Nollställer points,games och sets från den tidigare matchen.
 def resetStats(listofplayers):
