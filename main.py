@@ -21,10 +21,7 @@ def windowconfig():
     window.resizable(False , False) 
     window.title("Tennis simulator")
     return window
-windows = windowconfig()
-playersname = StringVar()
-playersname.set("")
-matchupnames = []
+
 # Denna funktion läser in statistiken från listan och skapar en lista med spelarobjekt.
 def filetolists():
     playerlist = []
@@ -64,22 +61,8 @@ def updatedstatistics(match):
             
             fil2.close()
 
-# Denna funktion sorterar spelarobjekten i en lista efter winratio.
-def comparisonwin(listofplayerobjects):
-    ratiolist=[]
-    for i in range(len(listofplayerobjects)):
-        ratiolist.append(listofplayerobjects[i].get_ratio())
-    ratiolist.sort(reverse=True)
-
-    sortedplayerlist = []
-    for i in range(len(ratiolist)):
-        for x in range(len(listofplayerobjects)):
-            if ratiolist[i] == listofplayerobjects[x].get_ratio():
-                sortedplayerlist.append(listofplayerobjects[x])
-    return sortedplayerlist
-
-#Denna funktion generar en tabell.
-def tablemaker(basewindow,listsorted):
+#Denna funktion generar en tom tabell där statistiken sedan kan föras in.
+def tablemaker(basewindow,listsorted, playersname):
     table = ttk.Treeview(basewindow,height=len(listsorted), selectmode="extended")
     table['columns'] = ('player_name', 'serve%', 'Wins', 'Win%')
 
@@ -101,7 +84,7 @@ def tablemaker(basewindow,listsorted):
     
     
     # Funktion som gör att användaren kan välja vilka som ska delta i matchen.
-    def selectplayers(a):
+    def selectplayers(playersname):
         playersname.set("")
         selecteditems = table.selection()
         
@@ -114,16 +97,16 @@ def tablemaker(basewindow,listsorted):
         
             
 
-    table.bind('<ButtonRelease-1>', selectplayers)
+    table.bind('<ButtonRelease-1>',lambda x: selectplayers(playersname))
     for i in range(len(listsorted)):
         table.insert(parent='',index='end',iid=i,text='',
         values=(listsorted[i].get_name(),int(listsorted[i].get_serve()*100),listsorted[i].get_wins(),round(listsorted[i].get_ratio()*100,3)))
     
-    table.grid(columnspan=len(listsorted),)
+    table.grid(columnspan=len(listsorted),column=1,row=1)
     return table
 
 #Funktion som uppdaterar poängställningen i matchen med points,games och sets
-def button_and_label_config(playerlist, table):
+def button_and_label_config(playerlist, table,windows,playersname):
     isplaying = BooleanVar(value=False)
     player1serv_var = StringVar()
     player2serv_var = StringVar()
@@ -143,7 +126,6 @@ def button_and_label_config(playerlist, table):
     
     
     print(player1name_var.get())
-    photo = PhotoImage(file="tennisboll.png")
     serverlabel1 = Label(windows,textvariable=player1serv_var)
     serverlabel1.grid(row=5,column=0)
     namelabel1 = Label(windows,textvariable=player1name_var)
@@ -157,8 +139,8 @@ def button_and_label_config(playerlist, table):
     advlabel1 = Label(windows,textvariable=player1adv_var)
     advlabel1.grid(row=5,column=5)
    
-    currentresult = Label(windows,image=photo, width=20,height=20)
-    currentresult.grid(row=5,column=7)
+    
+    
 
     serverlabel2 = Label(windows,textvariable=player2serv_var)
     serverlabel2.grid(row=6,column=0)
@@ -175,7 +157,7 @@ def button_and_label_config(playerlist, table):
     
 
     # Framställer en knapp. Vid tryck av knappen börjar simuleringen.
-    def simulator():
+    def simulator(playersname):
         
         if "-" in playersname.get() and isplaying.get() == False:
             isplaying.set(True)
@@ -211,32 +193,34 @@ def button_and_label_config(playerlist, table):
                 player1points_var.set(str(match.get_player1().get_points()))
                 player2points_var.set(str(match.get_player2().get_points()))
 
+                #Denna del av funktionen visar vem av spelarna som servar
                 if servername == player1name_var.get():
                     player1serv_var.set("(S)")
                     player2serv_var.set("")
                 
-                if servername == player2name_var.get():
+                elif servername == player2name_var.get():
                     player2serv_var.set("(S)")
                     player1serv_var.set("")
-                
+                #Denna del av funktionen visar om en spelare har fördel (ADV)
                 if match.get_player1().get_adv()== True:
                     player1adv_var.set("ADV")
                     player2adv_var.set("")
                 
-                if match.get_player2().get_adv()== True:
+                elif match.get_player2().get_adv()== True:
                     player2adv_var.set("ADV")
                     player1adv_var.set("")
                 
                 windows.update()
                 time.sleep(0.2)
             
-
+            # Denna del av funktionen uppdaterar statistiken i spelartabellen och skriver ut när matchen är avgjord.
             for var in stringvars:
                 var.set("")
             updatedstatistics(match)
             updatedlist = filetolists()
-            sortedlist = comparisonwin(updatedlist)
+            sortedlist = sorted(updatedlist)
             resetStats(playerlist)
+
             for i in range(len(sortedlist)):
                 table.delete(i)
                 table.insert(parent='',index='end',iid=i,text='',
@@ -249,15 +233,15 @@ def button_and_label_config(playerlist, table):
     
                
     
-    simulatebutton= Button(windows, command=simulator, text="       Simulate        ")
-    simulatebutton.grid(ipady=15,ipadx=25,column=int(1.5), rowspan=4)
+    simulatebutton= Button(windows, command=lambda : simulator(playersname), text="Simulate",width=7, height=1)
+    simulatebutton.grid(ipady=15,ipadx=25,column=int(0), rowspan=5,row=10)
     
     #En paus_knapp framställs. Vid tryck stannar simuleringen.
     def pause():
         messagebox.showinfo("Pausad","Matchen är pausad, tryck på OK för att återuppta.")
 
-    pausebutton = Button(windows,command=pause, text="Pause simulation")
-    pausebutton.grid(ipady=15,ipadx=25,column=int(1.5), rowspan=4)
+    pausebutton = Button(windows,command=pause, text="Pause simulation", width=7, height=1)
+    pausebutton.grid(ipady=15,ipadx=25,column=int(0), rowspan=5,row=20)
 
 #Nollställer points,games och sets från den tidigare matchen.
 def resetStats(listofplayers):
@@ -266,13 +250,23 @@ def resetStats(listofplayers):
         listofplayers[i].reset_setsendofmatch()
         listofplayers[i].reset_pointsendofmatch()
 
+# En textruta som förklarar displayen, samt vad användaren ska göra.
+def explanatorytext(windows):
+    infolabel = Label(windows, text = "ADV= Fördel\n  (S)= Spelaren som servar\n\n Markera två spelare i listan för att starta")
+    infolabel.grid(ipady=0,ipadx=1,column=0, rowspan=5)
+
 # Funktion där alla andra funktioner kallas på 
 def main():
-    
+    windows = windowconfig()
+    playersname = StringVar()
+    playersname.set("")
+        
+
+    explanatorytext(windows)
     playerlistfromfile = filetolists()
-    sortedlist = comparisonwin(playerlistfromfile)
-    table = tablemaker(windows,sortedlist)
-    button_and_label_config(playerlistfromfile,table)
+    sortedlist = sorted(playerlistfromfile)
+    table = tablemaker(windows,sortedlist,playersname)
+    button_and_label_config(playerlistfromfile,table, windows, playersname)
     windows.mainloop()
     
     

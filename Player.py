@@ -86,7 +86,10 @@ class Player:
     def get_ratio(self):
         return round((self.__wins)/(self.__gamesplayed),3)
 
-    #Funktion som sätter avgör games utifrån points
+    def __lt__(self,other):
+        return (self.get_ratio() > other.get_ratio())
+
+    #Funktion som sätter och avgör games utifrån points
     def __gt__(self,other):
         
         if other.get_points() < 40 and self.get_points() < 40:
@@ -122,8 +125,3 @@ class Player:
             other.set_sets()
             self.reset_games(other)
             self.set_change_server(True)
- 
-    
-    
-    
-
