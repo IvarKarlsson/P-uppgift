@@ -1,6 +1,6 @@
 
 class Player:
-   # Klassens konstruktor
+   # Klassens konstruktor. Objekt skapas utifrån textfilen
     def __init__(self,name,serve,wins,gamesplayed):
         self.__name = name
         self.__serve = serve
@@ -10,18 +10,22 @@ class Player:
         self.__games= 0
         self.__sets = 0
         self.__adv = False
+        self.__changeserver = False
 
+    def get_change_server(self):
+        return self.__changeserver
 
-    
+    def set_change_server(self, tochange):
+        self.__changeserver = tochange
+
+    #Mängd getters,setters och resetters
     def reset_points(self,other):
         self.__points = 0
         other.__points = 0
         self.__adv = False
         other.__adv = False
 
-
     def set_points(self, points):
-        
         self.__points += points
 
     def set_games(self):
@@ -54,10 +58,35 @@ class Player:
 
     def get_wins(self):
         return self.__wins
+    
+    def reset_gamesendofmatch(self):
+        self.__games = 0
+    
+    def reset_setsendofmatch(self):
+        self.__sets = 0
+    
+    def reset_pointsendofmatch(self):
+        self.__points = 0
+    
+    def get_gamesplayed(self):
+        return self.__games
+
+    def get_name(self):
+        return self.__name
+
+    def get_serve(self):
+        return self.__serve
+
+    def get_wins(self):
+        return self.__wins
+
     def get_gamesplayed(self):
         return self.__gamesplayed
 
+    def get_ratio(self):
+        return round((self.__wins)/(self.__gamesplayed),3)
 
+    #Funktion som sätter avgör games utifrån points
     def __gt__(self,other):
         
         if other.get_points() < 40 and self.get_points() < 40:
@@ -74,7 +103,6 @@ class Player:
         elif self.get_points()== 40 and other.get_points() < 40:
             self.reset_points(other)
             self.set_games()
-            
 
         elif self.get_points()==40 and other.get_points()==40:
             if other.get_adv() == False and self.get_adv() == False:
@@ -88,35 +116,14 @@ class Player:
         if self.get_games() >= (other.get_games() + 2) and self.get_games() >= 6:
             self.set_sets()
             self.reset_games(other)
+            self.set_change_server(True)
         
         if other.get_games() >= (self.get_games() + 2) and other.get_games() >= 6:
             other.set_sets()
             self.reset_games(other)
+            self.set_change_server(True)
  
-
-    def __str__(self):
-        finalstr = ""
-        playerstatslist = [self.get_name(),str(round(self.get_serve(),3)),str(self.get_wins()), str(round(self.get_ratio(),3))]
-        for i in range(len(playerstatslist)):
-            numdiff = 12 - len(playerstatslist[i])
-            finalstr += playerstatslist[i]
-            for x in range(numdiff):
-                finalstr += " "
-        return finalstr
-
-    def get_name(self):
-        return self.__name
-
-    def get_serve(self):
-        return self.__serve
-
-    def get_wins(self):
-        return self.__wins
-
-    def get_gamesplayed(self):
-        return self.__gamesplayed
-
-    def get_ratio(self):
-        return round((self.__wins)/(self.__gamesplayed),3)
+    
+    
     
 

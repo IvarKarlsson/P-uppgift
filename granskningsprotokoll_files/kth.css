@@ -1,0 +1,13 @@
+
+ body,button,input,select,textarea{font-family:'Helvetica Neue',helvetica,Arial,sans-serif;color:DimGray;}
+ hr{display:block;height:1px;border:0;border-top:1px solid Gray;margin: auto;padding:0;}
+ pre,code{font-family:monospace, monospace;_font-family:'courier new',monospace;}
+ pre{white-space:pre;white-space:pre-wrap;word-wrap:break-word;}
+
+ table{background:White; border:solid 10px RoyalBlue; padding: 20px;}
+
+ a{color:RoyalBlue;text-decoration:none;}
+ a:hover{text-decoration:underline;}
+
+ body{background:Gainsboro; padding: 20px;}
+

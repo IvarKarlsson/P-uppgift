@@ -1,7 +1,7 @@
 
 import random
 
-
+#En match klass där de spelarna som valts skapas som matchobjekt.
 class Match:
     def startserving(self, player1,player2):
         
@@ -21,7 +21,8 @@ class Match:
         self.__matchongoing = True
         self.__matchwinner = None
         self.__matchloser = None
-    
+        
+    #En mängd getters och setters.
     def get_player1(self):
         return self.__player1
     
@@ -45,6 +46,12 @@ class Match:
     
     def set_gamesp2(self):
         self.__gamesp2+=1
+
+    def reset_gamesp1(self):
+        self.__gamesp1= 0
+
+    def reset_gamesp2(self):
+        self.__gamesp2= 0
     
     def get_gamesp2(self):
         return self.__gamesp2
@@ -66,22 +73,26 @@ class Match:
 
     def get_matchwinner(self):
         return self.__matchwinner
+
+    def set_sets(self):
+        self.__setsp1 = self.get_setsp1()+1
+        self.set_server()
+        
+    def get_matchongoing(self):
+        return self.__matchongoing
     
+    def set_matchongoing(self):
+        self.__matchongoing = not self.__matchongoing
+    
+    #Funktion som ändrar den som servar
     def set_server(self):
         if self.get_player1().get_name()== self.get_server().get_name():
             self.__server= self.get_player2()
         else:
             self.__server= self.get_player1()
         
-    def set_sets(self):
-        self.__setsp1 = self.get_setsp1()+1
-
-    def get_matchongoing(self):
-        return self.__matchongoing
     
-    def set_matchongoing(self):
-        self.__matchongoing = not self.__matchongoing
-
+    #Funktion som simulerar en point och byter server vid gem.
     def points(self):
         server = self.get_server()
         playerservername = server.get_name()
@@ -97,24 +108,54 @@ class Match:
                 self.get_player2().__gt__(self.get_player1())
             else:
                 self.get_player1().__gt__(self.get_player2())
+
+
+
+        # if self.get_gamesp2()>= (self.get_gamesp1() + 2) and self.get_gamesp2()>= 6:
+        #     print("p2: " + str(self.get_gamesp2()))
+        #     self.set_server()
+        #     self.reset_gamesp1()
+        #     self.reset_gamesp2()
+
+        # if self.get_gamesp1()>= (self.get_gamesp2() + 2) and self.get_gamesp1()>= 6:
+        #     self.set_server()
+        #     self.reset_gamesp1()
+        #     self.reset_gamesp2()
+
         
         if(self.get_gamesp1() < self.get_player1().get_games()):
             self.set_server()
             self.set_gamesp1()
+        
         if(self.get_gamesp2() < self.get_player2().get_games()):
             self.set_server()
             self.set_gamesp2()
+        
+        if(self.get_player1().get_change_server() == True):
+            self.set_server()
+            self.get_player1().set_change_server(False)
+            self.reset_gamesp1()
+            self.reset_gamesp2()
+
+        if(self.get_player2().get_change_server() == True):
+            self.set_server()
+            self.get_player2().set_change_server(False)
+            self.reset_gamesp1()
+            self.reset_gamesp2()
+
+
         
         if self.get_player1().get_sets()== 3:
             self.set_matchongoing()
             self.set_matchwinner(self.get_player1())
             self.set_matchloser(self.get_player2())
-
+            
+            
         if self.get_player2().get_sets()== 3:
             self.set_matchongoing()
             self.set_matchwinner(self.get_player2())
             self.set_matchloser(self.get_player1())
-        
+           
         print("\n")
         print("(S) " + self.get_server().get_name())
         print(self.get_player1().get_name() +" " + str(self.get_player1().get_points())+" ADV: " + str(self.get_player1().get_adv()) + " Gems:"+ str(self.get_player1().get_games())+" Sets:"+ str(self.get_player1().get_sets()))
